@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Customer Support Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        #chatbox { width: 300px; height: 400px; border: 1px solid #ccc; overflow-y: scroll; padding: 10px; }
+        #input { width: calc(100% - 60px); }
+        #send { width: 60px; }
+    </style>
+</head>
+<body>
+    <h1>Customer Support Chatbot</h1>
+    <div id="chatbox"></div>
+    <input type="text" id="input" placeholder="Type your message here...">
+    <button id="send">Send</button>
+
+    <script>
+        document.getElementById('send').addEventListener('click', async () => {
+            const message = document.getElementById('input').value;
+            if (message.trim() === '') return;
+            
+            // Display user's message
+            const chatbox = document.getElementById('chatbox');
+            chatbox.innerHTML += `<div>User: ${message}</div>`;
+            document.getElementById('input').value = '';
+
+            // Get response from the server
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message })
+            });
+            const data = await response.json();
+
+            // Display chatbot's response
+            chatbox.innerHTML += `<div>Chatbot: ${data.response}</div>`;
+            chatbox.scrollTop = chatbox.scrollHeight;
+        });
+    </script>
+</body>
+</html>
